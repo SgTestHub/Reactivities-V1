@@ -14,6 +14,8 @@ builder.Services.AddDbContext<AppDbContext>(options  =>
 
 builder.Services.AddCors();
 builder.Services.AddMediatR(x=> x.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>());
+
+builder.Services.AddAutoMapper(typeof(Application.Core.MappingProfiles).Assembly);
 var app = builder.Build();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000","https://localhost:3000"));
 
