@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Application.Activities.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options  =>
 });
 
 builder.Services.AddCors();
+builder.Services.AddMediatR(x=> x.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>());
 var app = builder.Build();
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000","https://localhost:3000"));
 
