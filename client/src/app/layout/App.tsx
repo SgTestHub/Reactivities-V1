@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Box, Container, CssBaseline} from "@mui/material";
+import { Box, Container, CssBaseline } from "@mui/material";
 import axios from "axios";
 import NavBar from "./NavBar";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
@@ -12,36 +12,57 @@ function App() {
       .then(response => setActivities(response.data))
   }, [])
 
-const handleSelectActivity = (id: string) => {
-  setSelectedActivity(activities.find(x => x.id === id))
-}
-const handleCancelSelectActivity = () => {  setSelectedActivity(undefined);
-  setSelectedActivity(undefined);
-}
-const handleFormOpen = (id?: string) => {
-  if (id) {
-    handleSelectActivity(id);
-  } else {
-      handleCancelSelectActivity();
+  const handleSelectActivity = (id: string) => {
+    setSelectedActivity(activities.find(x => x.id === id))
   }
-  setEditMode(true);
-}
-const handleFormClose = () => {  setEditMode(false);
-}
+  const handleCancelSelectActivity = () => {
+    setSelectedActivity(undefined);
+    setSelectedActivity(undefined);
+  }
+  const handleFormOpen = (id?: string) => {
+    if (id) {
+      handleSelectActivity(id);
+    } else {
+      handleCancelSelectActivity();
+    }
+    setEditMode(true);
+  }
+  const handleFormClose = () => {
+    setEditMode(false);
+  }
+
+  const handleSubmitForm = (activity: Activity) => {
+    if (activity.id) {
+      //setActivities([...activities.filter(x => x.id !== activity.id), activity]);
+      setActivities(activities.map(x => x.id === activity.id ? activity : x));
+      setSelectedActivity(activity);
+    } else {
+      const newActivity = { ...activity, id: crypto.randomUUID() };
+      setSelectedActivity(newActivity);
+      setActivities([...activities, newActivity]);
+    }
+    setEditMode(false);
+  }
+
+  const handleDeleteActivity = (id: string) => {
+    setActivities(activities.filter(x => x.id !== id));
+  }
 
   return (
-    <Box sx={{ bgcolor:"#eeeeee" }}>
+    <Box sx={{ bgcolor: "#eeeeee" }}>
       <CssBaseline />
       <NavBar openForm={handleFormOpen} />
       <Container maxWidth='xl' sx={{ mt: 3 }}>
-        <ActivityDashboard activities={activities} 
-        onSelectActivity={handleSelectActivity} 
-        onCancelSelectActivity={handleCancelSelectActivity} 
-        selectedActivity={selectedActivity}
-        editMode = {editMode}
-        openForm={handleFormOpen}
-        closeForm={handleFormClose} 
-       />
+        <ActivityDashboard activities={activities}
+          onSelectActivity={handleSelectActivity}
+          onCancelSelectActivity={handleCancelSelectActivity}
+          selectedActivity={selectedActivity}
+          editMode={editMode}
+          openForm={handleFormOpen}
+          closeForm={handleFormClose}
+          submitForm={handleSubmitForm}
+          deleteActivity={handleDeleteActivity}
+        />
       </Container>
     </Box>
   )

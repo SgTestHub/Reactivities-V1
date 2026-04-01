@@ -3,8 +3,9 @@ import type { SyntheticEvent } from "react";
 type Props = {
     activity?: Activity;
     closeForm: () => void;
+    submitForm: (activity: Activity) => void;
 }
-export default function ActivityForm({ activity, closeForm }: Props) {
+export default function ActivityForm({ activity, closeForm, submitForm   }: Props) {
     const handleSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -12,6 +13,10 @@ export default function ActivityForm({ activity, closeForm }: Props) {
         for (const [key, value] of formData.entries()) {
             data[key] = value;
         }
+        if (activity) {
+            data.id = activity.id;
+        }
+        submitForm(data as unknown as Activity);
         // Handle form submission logic here
         console.log("Form submitted", data);
     };
@@ -30,7 +35,7 @@ export default function ActivityForm({ activity, closeForm }: Props) {
                 <TextField name='venue' label='Venue' defaultValue={activity?.venue} />
                 <Box display='flex' justifyContent='end' gap={3}>
                     <Button onClick={closeForm} color="inherit">Cancel</Button>
-                    <Button type="submit" color="success" variant="contained">Submit</Button>
+                    <Button type="submit"  color="success" variant="contained">Submit</Button>
                 </Box>
             </Box>
         </Paper>
